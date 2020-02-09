@@ -1,0 +1,9 @@
+[package]
+name = "api"
+version = "0.1.0"
+authors = ["Alexandre Senges <alexandre@senges.ch>"]
+edition = "2018"
+
+[dependencies]
+actix-web = "2"
+actix-rt = "1"
