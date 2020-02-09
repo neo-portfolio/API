@@ -1,14 +1,17 @@
-use actix_web::{get, web, App, HttpServer, Responder};
+#[macro_use]
+extern crate log;
 
-#[get("/{id}/{name}/index.html")]
-async fn index(info: web::Path<(u32, String)>) -> impl Responder {
-    format!("Hello {}! id:{}", info.1, info.0)
-}
+use actix_web::{App, HttpServer};
+
+mod config;
+mod services;
 
 #[actix_rt::main]
 async fn main() -> std::io::Result<()> {
-    HttpServer::new(|| App::new().service(index))
+    let server = HttpServer::new(move || App::new()
+        .configure(config::app::config))
         .bind("127.0.0.1:8080")?
         .run()
-        .await
+        .await;
+    return server;
 }
