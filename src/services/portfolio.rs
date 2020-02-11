@@ -13,7 +13,8 @@ async fn company_info(web::Query(params): web::Query<CompanyRequest>) -> HttpRes
     client.authentication("neo4j", "test1234");
     let query = format!("MATCH (company: Company {{symbol: '{}'}}) RETURN company;", params.symbol);
     let object = client.query::<Company>(&query).await;
-    HttpResponse::Ok().json(&object)
+    let data = object.data();
+    HttpResponse::Ok().json(data)
 }
 
 pub fn config(cfg: &mut web::ServiceConfig) {

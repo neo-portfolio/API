@@ -9,7 +9,7 @@ struct QueryResponseMeta {
 }
 
 #[derive(Debug, Serialize, Deserialize)]
-struct QueryResponseData<T> {
+pub struct QueryResponseData<T> {
     row: Vec<T>,
     meta: Vec<QueryResponseMeta>
 }
@@ -23,4 +23,10 @@ struct QueryResponseFields<T> {
 #[derive(Debug, Serialize, Deserialize)]
 pub struct QueryResponse<T> {
     results: Vec<QueryResponseFields<T>>
+}
+
+impl<T> QueryResponse<T> {
+    pub fn data(&self) -> &Vec<QueryResponseData<T>> {
+        &self.results[0].data
+    }
 }

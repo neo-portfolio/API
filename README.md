@@ -20,3 +20,8 @@ Follow instructions on [the official website.](https://www.rust-lang.org/tools/i
 ### Production
     
     cargo build --release
+    
+    
+# Run
+
+    cargo run
