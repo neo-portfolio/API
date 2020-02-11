@@ -1,5 +1,8 @@
 use actix_web::client::Client;
 
+use crate::neo4j::structures::QueryResponse;
+use serde::de::DeserializeOwned;
+
 pub struct Driver<'a> {
     host: &'a str,
     port: i16,
@@ -22,19 +25,24 @@ impl<'a> Driver<'a> {
         format!("{{\"statements\":[{{\"statement\": \"{}\"}}]}}", statement)
     }
 
-    pub async fn query(&self, statement: &str) {
+    pub async fn query<T: DeserializeOwned>(&self, statement: &str) -> QueryResponse<T> {
         let client = Client::default();
 
         let json = self.query_builder(statement);
         let url = format!("http://{}:{}/db/{}/tx/commit", self.host, self.port, self.db);
-        println!("{}", url);
 
-        let response = client.post(url)
+        println!("{}", json);
+
+        let mut response = client.post(url)
                              .header("Content-Type", "application/json")
                              .header("Authorization", format!("{} {}", self.user, self.password))
-                             .send_json(&json)
-                             .await;                      // <- Send http request
+                             .send_body(&json)
+                             .await.unwrap();
 
-        println!("Response: {:?}", response);
+
+        let body = response.body().await.unwrap();
+        let body_str = std::str::from_utf8(&body).unwrap();
+        println!("{}", body_str);
+        serde_json::from_str(body_str).unwrap()
     }
 }
