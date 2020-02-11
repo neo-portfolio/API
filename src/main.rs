@@ -14,7 +14,7 @@ async fn main() -> std::io::Result<()> {
     println!("START");
     HttpServer::new(move || App::new()
         .wrap(Cors::new()
-            .allowed_origin("*")
+            .allowed_origin("http://localhost:3000")
             .max_age(3600)
             .finish()
         )
