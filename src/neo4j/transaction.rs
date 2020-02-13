@@ -18,7 +18,10 @@ pub struct Transaction {
 }
 
 impl CypherStatement {
-    #[allow(dead_code)]
+    pub fn new(statement: String) -> CypherStatement {
+        CypherStatement { statement, parameters: serde_json::Map::new() }
+    }
+
     pub fn set_parameters(&mut self, parameters: serde_json::Map<String, Value>) {
         self.parameters = parameters;
     }
@@ -29,10 +32,8 @@ impl Transaction {
         Transaction { statements: Vec::new() }
     }
 
-    pub fn add_statement(&mut self, statement: String) -> &CypherStatement {
-        let statement: CypherStatement = CypherStatement { statement, parameters: serde_json::Map::new() };
+    pub fn add_statement(&mut self, statement: CypherStatement) {
         self.statements.push(statement);
-        &self.statements.last().unwrap()
     }
 
     pub async fn commit<T: DeserializeOwned>(&self) -> QueryResponse<T> {
