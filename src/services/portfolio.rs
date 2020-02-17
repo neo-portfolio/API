@@ -10,14 +10,6 @@ struct CompanyRequest {
     symbol: String
 }
 
-#[derive(Deserialize)]
-struct GenerateRequestBody {
-    companies: Vec<String>,
-    #[serde(rename = "maxCount")]
-    max_count: i16,
-}
-
-
 async fn company_info(web::Query(params): web::Query<CompanyRequest>) -> HttpResponse {
     let mut tx: Transaction = Transaction::new();
     let query_str: String = "MATCH (company: Company) WHERE company.symbol IN $symbols RETURN company;".to_string();
@@ -32,8 +24,17 @@ async fn company_info(web::Query(params): web::Query<CompanyRequest>) -> HttpRes
     HttpResponse::Ok().json(data)
 }
 
+#[derive(Deserialize)]
+struct GenerateRequestBody {
+    symbols: Vec<String>,
+    #[serde(rename = "maxCount")]
+    max_count: i16,
+}
 
 async fn generate_portfolio(body: web::Json<GenerateRequestBody>) -> HttpResponse {
+    let symbols = &body.symbols;
+    let count = &body.max_count;
+
     HttpResponse::Ok().body("")
 }
 

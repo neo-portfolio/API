@@ -6,10 +6,12 @@ use serde_json::Value;
 use crate::neo4j::driver::DRIVER;
 use crate::neo4j::structures::QueryResponse;
 
+pub type CypherParameter = serde_json::Map<String, Value>;
+
 #[derive(Serialize)]
 pub struct CypherStatement {
     statement: String,
-    parameters: serde_json::Map<String, Value>,
+    parameters: CypherParameter,
 }
 
 #[derive(Serialize)]
@@ -22,7 +24,7 @@ impl CypherStatement {
         CypherStatement { statement, parameters: serde_json::Map::new() }
     }
 
-    pub fn set_parameters(&mut self, parameters: serde_json::Map<String, Value>) {
+    pub fn set_parameters(&mut self, parameters: CypherParameter) {
         self.parameters = parameters;
     }
 }
