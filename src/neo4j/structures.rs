@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 
-#[derive(Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize)]
 struct QueryResponseMeta {
     deleted: bool,
     id: u64,
@@ -8,19 +8,26 @@ struct QueryResponseMeta {
     _type: String
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct QueryResponseData<T> {
     row: Vec<T>,
+    #[serde(skip)]
     meta: Vec<QueryResponseMeta>
 }
 
-#[derive(Serialize, Deserialize)]
+impl<T> QueryResponseData<T> {
+    pub fn row(&self) -> &Vec<T> {
+        &self.row
+    }
+}
+
+#[derive(Debug, Serialize, Deserialize)]
 struct QueryResponseFields<T> {
     columns: Vec<String>,
     data: Vec<QueryResponseData<T>>
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct QueryResponse<T> {
     results: Vec<QueryResponseFields<T>>
 }
