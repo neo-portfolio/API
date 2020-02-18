@@ -1,7 +1,9 @@
-use actix_web::client::Client;
+use std::time::Duration;
+
+use actix_web::client::ClientBuilder;
 use serde::de::DeserializeOwned;
 use serde::Serialize;
-use serde_json::{Value};
+use serde_json::Value;
 
 use crate::neo4j::driver::DRIVER;
 use crate::neo4j::structures::QueryResponse;
@@ -51,16 +53,18 @@ impl Transaction {
     }
 
     pub async fn commit<T: DeserializeOwned>(&self) -> QueryResponse<T> {
-        let client = Client::default();
+        let timeout: Duration = Duration::new(20, 0);
+        let client_builder = ClientBuilder::new().timeout(timeout);
+        let client = client_builder.finish();
 
         let url = format!("http://{}:{}/db/{}/tx/commit", DRIVER.host, DRIVER.port, DRIVER.db);
 
         let mut response = client.post(url)
-            .header("Content-Type", "application/json")
-            .header("Authorization", format!("{} {}", DRIVER.user, DRIVER.password))
-            .send_json(&self)
-            .await
-            .unwrap();
+                                 .header("Content-Type", "application/json")
+                                 .header("Authorization", format!("{} {}", DRIVER.user, DRIVER.password))
+                                 .send_json(&self)
+                                 .await
+                                 .unwrap();
 
 
         let body = response.body().await.unwrap();

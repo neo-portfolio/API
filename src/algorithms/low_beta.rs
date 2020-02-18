@@ -27,9 +27,12 @@ fn find_or_add(indexes: &mut HashMap<String, usize>, symbol: &String, last_index
 
 
 fn dimensions(resp: &Vec<QueryResponseData<CompanyOrCorrelation>>) -> (usize, usize) {
+    // n*(n+1) = len + n
+    // n**2 - 2*n - len = 0
+    // Quadratic -> (2 + sqrt(4 + 4 * len)) / 2 = n
     let len: usize = resp.len();
-    let delta: usize = ((1 + 8 * len) as f64).sqrt() as usize;
-    let dim: usize = ((delta as f64 - 1f64) / 2f64).ceil() as usize;
+    let delta = ((4 + 4 * len) as f64).sqrt();
+    let dim: usize = ((delta + 2f64) / 2f64).floor() as usize;
     let vec_dim = len + dim;
     assert_eq!(dim * dim, vec_dim);
     (dim, vec_dim)
