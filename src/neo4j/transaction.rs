@@ -1,20 +1,32 @@
 use actix_web::client::Client;
 use serde::de::DeserializeOwned;
 use serde::Serialize;
-use serde_json::Value;
+use serde_json::{Value};
 
 use crate::neo4j::driver::DRIVER;
 use crate::neo4j::structures::QueryResponse;
 
 pub type CypherParameter = serde_json::Map<String, Value>;
 
-#[derive(Serialize)]
+#[macro_export]
+macro_rules! cypher_parameter {
+    ({$($key: expr => $value: expr), +}) => {{
+        use serde_json::json;
+        let mut param = CypherParameter::new();
+        $(
+            param.insert($key, json!($value));
+        )+
+        param
+    }};
+}
+
+#[derive(Debug, Serialize)]
 pub struct CypherStatement {
     statement: String,
     parameters: CypherParameter,
 }
 
-#[derive(Serialize)]
+#[derive(Debug, Serialize)]
 pub struct Transaction {
     statements: Vec<CypherStatement>
 }
@@ -44,11 +56,11 @@ impl Transaction {
         let url = format!("http://{}:{}/db/{}/tx/commit", DRIVER.host, DRIVER.port, DRIVER.db);
 
         let mut response = client.post(url)
-                                 .header("Content-Type", "application/json")
-                                 .header("Authorization", format!("{} {}", DRIVER.user, DRIVER.password))
-                                 .send_json(&self)
-                                 .await
-                                 .unwrap();
+            .header("Content-Type", "application/json")
+            .header("Authorization", format!("{} {}", DRIVER.user, DRIVER.password))
+            .send_json(&self)
+            .await
+            .unwrap();
 
 
         let body = response.body().await.unwrap();
