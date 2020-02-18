@@ -1,6 +1,13 @@
 #[macro_use]
 extern crate log;
 
+#[macro_use]
+macro_rules! string {
+    ($s: literal) => {
+        $s.to_string();
+    };
+}
+
 use actix_cors::Cors;
 use actix_web::{App, HttpServer};
 

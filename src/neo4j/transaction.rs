@@ -65,7 +65,6 @@ impl Transaction {
 
         let body = response.body().await.unwrap();
         let body_str = std::str::from_utf8(&body).unwrap();
-        println!("{}", body_str);
         serde_json::from_str(body_str).unwrap()
     }
 }
