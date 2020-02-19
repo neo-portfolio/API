@@ -1,10 +1,14 @@
+use load_dotenv::load_dotenv;
+
 pub struct Driver<'a> {
     // Static immutable -> no need for getters and setters
     pub host: &'a str,
-    pub port: i16,
+    pub port: &'a str,
     pub db: &'a str,
     pub user: &'a str,
     pub password: &'a str,
 }
 
-pub static DRIVER: Driver = Driver { host: "skyr.internet-box.ch", port: 7474, db: "neo4j", user: "neo4j", password: "test1234" };
+load_dotenv!();
+
+pub static DRIVER: Driver = Driver { host: env!("NEO4J_URL"), port: env!("NEO4J_PORT"), db: env!("NEO4J_PORT"), user: env!("NEO4J_USER"), password: env!("NEO4J_PASSWORD") };

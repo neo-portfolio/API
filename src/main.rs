@@ -1,6 +1,11 @@
 #[macro_use]
 extern crate log;
 
+use actix_cors::Cors;
+use actix_web::{App, HttpServer};
+
+use load_dotenv::load_dotenv;
+
 #[macro_use]
 macro_rules! string {
     ($s: literal) => {
@@ -8,21 +13,21 @@ macro_rules! string {
     };
 }
 
-use actix_cors::Cors;
-use actix_web::{App, HttpServer};
-
 mod config;
 mod services;
 mod neo4j;
 pub mod models;
 mod algorithms;
 
+
+load_dotenv!();
+
 #[actix_rt::main]
 async fn main() -> std::io::Result<()> {
     println!("START");
     HttpServer::new(move || App::new()
         .wrap(Cors::new()
-            .allowed_origin("http://localhost:3000")
+            .allowed_origin(env!("ALLOWED_ORIGIN"))
             .max_age(7200)
             .finish()
         )
