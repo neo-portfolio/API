@@ -25,3 +25,12 @@ Follow instructions on [the official website.](https://www.rust-lang.org/tools/i
 # Run
 
     cargo run
+    
+# .env
+
+    NEO4J_URL=
+    NEO4J_PORT=
+    NEO4J_USER=
+    NEO4J_PASSWORD=
+    NEO4J_DATABASE=
+    ALLOWED_ORIGIN=

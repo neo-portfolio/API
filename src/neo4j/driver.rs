@@ -11,4 +11,10 @@ pub struct Driver<'a> {
 
 load_dotenv!();
 
-pub static DRIVER: Driver = Driver { host: env!("NEO4J_URL"), port: env!("NEO4J_PORT"), db: env!("NEO4J_PORT"), user: env!("NEO4J_USER"), password: env!("NEO4J_PASSWORD") };
+pub static DRIVER: Driver = Driver {
+    host: env!("NEO4J_URL"),
+    port: env!("NEO4J_PORT"),
+    db: env!("NEO4J_DATABASE"),
+    user: env!("NEO4J_USER"),
+    password: env!("NEO4J_PASSWORD")
+};
